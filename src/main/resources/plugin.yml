@@ -1,0 +1,21 @@
+name: DayRooms
+version: '1.0.0'
+main: com.dayrooms.DayRooms
+api-version: '1.20'
+author: Bughatti
+description: Plugin de salas privadas de práctica para servidores BoxPvP
+
+commands:
+  dayrooms:
+    description: Comando principal del plugin DayRooms
+    usage: /dayrooms [create|editor|save|wand|barrier|teleport|effects|keepinventory|utilities|reload]
+    permission: dayrooms.use
+    permission-message: '§cNo tenés permiso para usar este comando.'
+
+permissions:
+  dayrooms.use:
+    description: Permite usar /dayrooms
+    default: true
+  dayrooms.admin:
+    description: Permite crear/editar/eliminar rooms y usar reload
+    default: op
