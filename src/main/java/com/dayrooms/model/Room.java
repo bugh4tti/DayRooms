@@ -1,5 +1,7 @@
 package com.dayrooms.model;
 
+import org.bukkit.Location;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,8 +15,15 @@ public class Room {
     private boolean keepInventory = false;
     private boolean utilidadesHabilitadas = true;
 
+    private Location esquina1;
+    private Location esquina2;
     private boolean esquinasDefinidas = false;
+
+    private Location barreraEsquina1;
+    private Location barreraEsquina2;
     private boolean barreraDefinida = false;
+
+    private Location teleportLocation;
     private boolean teleportZoneDefinida = false;
 
     public Room(String name, UUID owner) {
@@ -54,6 +63,22 @@ public class Room {
         this.utilidadesHabilitadas = utilidadesHabilitadas;
     }
 
+    public Location getEsquina1() {
+        return esquina1;
+    }
+
+    public void setEsquina1(Location esquina1) {
+        this.esquina1 = esquina1;
+    }
+
+    public Location getEsquina2() {
+        return esquina2;
+    }
+
+    public void setEsquina2(Location esquina2) {
+        this.esquina2 = esquina2;
+    }
+
     public boolean isEsquinasDefinidas() {
         return esquinasDefinidas;
     }
@@ -62,12 +87,36 @@ public class Room {
         this.esquinasDefinidas = esquinasDefinidas;
     }
 
+    public Location getBarreraEsquina1() {
+        return barreraEsquina1;
+    }
+
+    public void setBarreraEsquina1(Location barreraEsquina1) {
+        this.barreraEsquina1 = barreraEsquina1;
+    }
+
+    public Location getBarreraEsquina2() {
+        return barreraEsquina2;
+    }
+
+    public void setBarreraEsquina2(Location barreraEsquina2) {
+        this.barreraEsquina2 = barreraEsquina2;
+    }
+
     public boolean isBarreraDefinida() {
         return barreraDefinida;
     }
 
     public void setBarreraDefinida(boolean barreraDefinida) {
         this.barreraDefinida = barreraDefinida;
+    }
+
+    public Location getTeleportLocation() {
+        return teleportLocation;
+    }
+
+    public void setTeleportLocation(Location teleportLocation) {
+        this.teleportLocation = teleportLocation;
     }
 
     public boolean isTeleportZoneDefinida() {
@@ -81,4 +130,4 @@ public class Room {
     public boolean isCompleta() {
         return esquinasDefinidas && barreraDefinida;
     }
-    }
+}
