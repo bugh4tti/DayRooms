@@ -2,7 +2,10 @@ package com.dayrooms;
 
 import com.dayrooms.commands.DayRoomsCommand;
 import com.dayrooms.gui.MenuListener;
+import com.dayrooms.listeners.EffectsListener;
+import com.dayrooms.listeners.PvPListener;
 import com.dayrooms.listeners.SelectionListener;
+import com.dayrooms.managers.BarrierManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.SelectionManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,15 +14,19 @@ public class DayRooms extends JavaPlugin {
 
     private RoomManager roomManager;
     private SelectionManager selectionManager;
+    private BarrierManager barrierManager;
 
     @Override
     public void onEnable() {
         this.roomManager = new RoomManager();
         this.selectionManager = new SelectionManager();
+        this.barrierManager = new BarrierManager(this);
 
-        getCommand("dayrooms").setExecutor(new DayRoomsCommand(roomManager, selectionManager));
+        getCommand("dayrooms").setExecutor(new DayRoomsCommand(roomManager, selectionManager, barrierManager));
         getServer().getPluginManager().registerEvents(new MenuListener(roomManager, selectionManager), this);
         getServer().getPluginManager().registerEvents(new SelectionListener(selectionManager, roomManager), this);
+        getServer().getPluginManager().registerEvents(new EffectsListener(roomManager, selectionManager), this);
+        getServer().getPluginManager().registerEvents(new PvPListener(roomManager, barrierManager), this);
 
         getLogger().info("DayRooms habilitado correctamente.");
     }
@@ -35,5 +42,9 @@ public class DayRooms extends JavaPlugin {
 
     public SelectionManager getSelectionManager() {
         return selectionManager;
+    }
+
+    public BarrierManager getBarrierManager() {
+        return barrierManager;
     }
 }
