@@ -1,1 +1,16 @@
+# Configuración de DayRooms
+# Soporta colores clásicos (&a, &l, etc.) y colores hex (&#RRGGBB)
 
+mensajes:
+  victoria: "&c&l[!] ¡Felicidades %ganador%! Ganaste el combate en la room %room% contra &e%perdedor%"
+  entrada: "&#0096FF&l[!] &#0096FF¡Entraste en la room %room%! | ¡Mucha suerte jugador! 🏹"
+  barrera-countdown: "&e&lLa barrera se romperá en &c&l%seg%s&e&l!"
+  barrera-rota: "&a&l¡A pelear!"
+  no-tienes-room-en-edicion: "&cPrimero creá o editá una room: &e/dayrooms create <nombre>"
+  keepinventory-activado: "&a✔ Keep inventory activado en la room %room%"
+  keepinventory-desactivado: "&c✘ Keep inventory desactivado en la room %room%"
+  utilities-activado: "&a✔ Utilities (lana/tela) activado en la room %room%"
+  utilities-desactivado: "&c✘ Utilities (lana/tela) desactivado en la room %room%"
+  utilities-bloqueado: "&cNo podés usar lana/tela en esta room (utilities desactivado)."
+  room-no-existe: "&cNo existe una room con ese nombre."
+  uso-true-false: "&cUso: /dayrooms %subcomando% <room> <true|false>"
