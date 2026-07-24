@@ -1,6 +1,7 @@
 package com.dayrooms.listeners;
 
 import com.dayrooms.managers.BarrierManager;
+import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.model.Room;
 import org.bukkit.Bukkit;
@@ -11,19 +12,16 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.List;
 
-/**
- * Detecta cuando un jugador muere dentro de una room: el que lo mató
- * (o el otro jugador presente) es el ganador. Dispara el mensaje
- * global de victoria y arranca el cooldown de la barrera.
- */
 public class PvPListener implements Listener {
 
     private final RoomManager roomManager;
     private final BarrierManager barrierManager;
+    private final MessageManager messageManager;
 
-    public PvPListener(RoomManager roomManager, BarrierManager barrierManager) {
+    public PvPListener(RoomManager roomManager, BarrierManager barrierManager, MessageManager messageManager) {
         this.roomManager = roomManager;
         this.barrierManager = barrierManager;
+        this.messageManager = messageManager;
     }
 
     @EventHandler
@@ -31,24 +29,22 @@ public class PvPListener implements Listener {
         Player perdedor = event.getEntity();
         Room room = roomManager.encontrarRoomPorUbicacion(perdedor.getLocation());
         if (room == null) {
-            return; // la muerte no fue dentro de ninguna room
+            return;
         }
 
         Player ganador = perdedor.getKiller();
         if (ganador == null) {
-            // Nadie lo mató directamente (caída, fuego, etc.) - no hay "ganador" de pvp
             return;
         }
 
-        String mensaje = "&c&l[!] ¡Felicidades %ganador%! Ganaste el combate en la room %room% contra &e%perdedor%"
+        String mensaje = messageManager.get("victoria")
                 .replace("%ganador%", ganador.getName())
                 .replace("%room%", room.getName())
-                .replace("%perdedor%", perdedor.getName())
-                .replace('&', '§');
+                .replace("%perdedor%", perdedor.getName());
 
         Bukkit.broadcastMessage(mensaje);
 
         List<Player> jugadoresEnRoom = barrierManager.obtenerJugadoresEnRoom(room);
         barrierManager.iniciarCountdownPostVictoria(room, jugadoresEnRoom);
     }
-  }
+}
