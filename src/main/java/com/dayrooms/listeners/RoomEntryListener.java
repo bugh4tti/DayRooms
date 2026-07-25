@@ -3,12 +3,16 @@ package com.dayrooms.listeners;
 import com.dayrooms.managers.BarrierManager;
 import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
+import com.dayrooms.model.EffectData;
 import com.dayrooms.model.Room;
+import com.dayrooms.utils.EffectTypeMapper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,19 +20,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Detecta cuándo un jugador entra a una room caminando:
- * - Si la room ya tiene 2+ jugadores peleando, lo manda a la
- *   zona de teleport (si está definida) en vez de dejarlo entrar.
- * - Si no, le manda el mensaje de bienvenida personalizado.
- */
 public class RoomEntryListener implements Listener {
 
     private final RoomManager roomManager;
     private final BarrierManager barrierManager;
     private final MessageManager messageManager;
 
-    // Jugador -> nombre de la room en la que está parado ahora mismo (o null si no está en ninguna)
     private final Map<UUID, String> roomActualPorJugador = new HashMap<>();
 
     public RoomEntryListener(RoomManager roomManager, BarrierManager barrierManager, MessageManager messageManager) {
@@ -39,7 +36,6 @@ public class RoomEntryListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        // Solo evaluamos si cambió de bloque (evita recalcular en cada micro-movimiento)
         if (event.getFrom().getBlockX() == event.getTo().getBlockX()
                 && event.getFrom().getBlockY() == event.getTo().getBlockY()
                 && event.getFrom().getBlockZ() == event.getTo().getBlockZ()) {
@@ -54,19 +50,28 @@ public class RoomEntryListener implements Listener {
         String nombreRoomAnterior = roomActualPorJugador.get(uuid);
 
         if (Objects.equals(nombreRoomAnterior, nombreRoomActual)) {
-            return; // sigue en la misma room (o sigue afuera de todas), nada que hacer
+            return;
+        }
+
+        // Salio de una room: quitar efectos y avisar
+        if (nombreRoomAnterior != null) {
+            Room roomAnterior = roomManager.obtener(nombreRoomAnterior);
+            if (roomAnterior != null) {
+                quitarEfectos(jugador, roomAnterior);
+                String mensajeSalida = messageManager.get("salida").replace("%room%", roomAnterior.getName());
+                jugador.sendMessage(mensajeSalida);
+            }
         }
 
         roomActualPorJugador.put(uuid, nombreRoomActual);
 
         if (roomActual == null) {
-            return; // se fue de una room, no hace falta avisar nada
+            return;
         }
 
-        // Recién entró a roomActual
         List<Player> jugadoresDentro = barrierManager.obtenerJugadoresEnRoom(roomActual);
 
-        boolean roomOcupadaPeleando = jugadoresDentro.size() > 2; // ya había 2 (o más) antes de que él entrara
+        boolean roomOcupadaPeleando = jugadoresDentro.size() > 2;
 
         if (roomOcupadaPeleando && roomActual.isTeleportZoneDefinida()) {
             jugador.teleport(roomActual.getTeleportLocation());
@@ -74,12 +79,44 @@ public class RoomEntryListener implements Listener {
             return;
         }
 
-        String mensaje = messageManager.get("entrada").replace("%room%", roomActual.getName());
-        jugador.sendMessage(mensaje);
+        // Si con este jugador ya hay 2 adentro, se cierra la barrera para contener la pelea
+        if (jugadoresDentro.size() == 2 && roomActual.isBarreraDefinida()) {
+            barrierManager.colocarBarrera(roomActual);
+        }
+
+        aplicarEfectos(jugador, roomActual);
+
+        String mensajeEntrada = messageManager.get("entrada").replace("%room%", roomActual.getName());
+        jugador.sendMessage(mensajeEntrada);
+    }
+
+    private void aplicarEfectos(Player jugador, Room room) {
+        for (Map.Entry<String, EffectData> entrada : room.getEfectos().entrySet()) {
+            EffectData datos = entrada.getValue();
+            if (!datos.estaActivo() || datos.getDuracionSegundos() <= 0) {
+                continue;
+            }
+            PotionEffectType tipo = EffectTypeMapper.map(entrada.getKey());
+            if (tipo == null) {
+                continue;
+            }
+            int amplificador = Math.max(0, datos.getNivel() - 1);
+            int duracionTicks = (int) (datos.getDuracionSegundos() * 20);
+            jugador.addPotionEffect(new PotionEffect(tipo, duracionTicks, amplificador));
+        }
+    }
+
+    private void quitarEfectos(Player jugador, Room room) {
+        for (String key : room.getEfectos().keySet()) {
+            PotionEffectType tipo = EffectTypeMapper.map(key);
+            if (tipo != null) {
+                jugador.removePotionEffect(tipo);
+            }
+        }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         roomActualPorJugador.remove(event.getPlayer().getUniqueId());
     }
-  }
+        }
