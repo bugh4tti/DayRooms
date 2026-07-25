@@ -3,6 +3,7 @@ package com.dayrooms;
 import com.dayrooms.commands.DayRoomsCommand;
 import com.dayrooms.commands.DayRoomsTabCompleter;
 import com.dayrooms.gui.MenuListener;
+import com.dayrooms.listeners.BarrierBreakListener;
 import com.dayrooms.listeners.CommandBlockListener;
 import com.dayrooms.listeners.EffectsListener;
 import com.dayrooms.listeners.PvPListener;
@@ -11,6 +12,7 @@ import com.dayrooms.listeners.RoomListListener;
 import com.dayrooms.listeners.SelectionListener;
 import com.dayrooms.listeners.UtilitiesListener;
 import com.dayrooms.managers.BarrierManager;
+import com.dayrooms.managers.ManualBarrierManager;
 import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.RoomPersistenceManager;
@@ -24,6 +26,7 @@ public class DayRooms extends JavaPlugin {
     private BarrierManager barrierManager;
     private MessageManager messageManager;
     private RoomPersistenceManager persistenceManager;
+    private ManualBarrierManager manualBarrierManager;
 
     @Override
     public void onEnable() {
@@ -34,6 +37,7 @@ public class DayRooms extends JavaPlugin {
         this.messageManager = new MessageManager(this);
         this.barrierManager = new BarrierManager(this, messageManager);
         this.persistenceManager = new RoomPersistenceManager(this);
+        this.manualBarrierManager = new ManualBarrierManager(this, barrierManager, messageManager);
 
         persistenceManager.cargarTodas(roomManager);
 
@@ -45,9 +49,10 @@ public class DayRooms extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EffectsListener(roomManager, selectionManager), this);
         getServer().getPluginManager().registerEvents(new PvPListener(roomManager, barrierManager, messageManager), this);
         getServer().getPluginManager().registerEvents(new UtilitiesListener(roomManager, messageManager), this);
-        getServer().getPluginManager().registerEvents(new RoomEntryListener(roomManager, barrierManager, messageManager), this);
+        getServer().getPluginManager().registerEvents(new RoomEntryListener(roomManager, barrierManager, messageManager, manualBarrierManager), this);
         getServer().getPluginManager().registerEvents(new RoomListListener(roomManager, selectionManager), this);
         getServer().getPluginManager().registerEvents(new CommandBlockListener(roomManager, messageManager), this);
+        getServer().getPluginManager().registerEvents(new BarrierBreakListener(roomManager, manualBarrierManager), this);
 
         getLogger().info("DayRooms habilitado correctamente.");
     }
