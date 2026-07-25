@@ -29,6 +29,18 @@ public class BarrierManager {
         rellenarCuboid(room.getBarreraEsquina1(), room.getBarreraEsquina2(), Material.AIR);
     }
 
+    /**
+     * Revisa el bloque real de una esquina de la barrera para saber si
+     * ya esta cerrada (evita cerrarla de nuevo en cada movimiento).
+     */
+    public boolean barreraEstaCerrada(Room room) {
+        Location loc1 = room.getBarreraEsquina1();
+        if (loc1 == null || loc1.getWorld() == null) {
+            return false;
+        }
+        return loc1.getBlock().getType() == Material.GLASS;
+    }
+
     private void rellenarCuboid(Location loc1, Location loc2, Material material) {
         if (loc1 == null || loc2 == null || loc1.getWorld() == null) {
             return;
