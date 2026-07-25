@@ -1,6 +1,7 @@
 package com.dayrooms.listeners;
 
 import com.dayrooms.managers.BarrierManager;
+import com.dayrooms.managers.ManualBarrierManager;
 import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.model.EffectData;
@@ -25,13 +26,16 @@ public class RoomEntryListener implements Listener {
     private final RoomManager roomManager;
     private final BarrierManager barrierManager;
     private final MessageManager messageManager;
+    private final ManualBarrierManager manualBarrierManager;
 
     private final Map<UUID, String> roomActualPorJugador = new HashMap<>();
 
-    public RoomEntryListener(RoomManager roomManager, BarrierManager barrierManager, MessageManager messageManager) {
+    public RoomEntryListener(RoomManager roomManager, BarrierManager barrierManager,
+                              MessageManager messageManager, ManualBarrierManager manualBarrierManager) {
         this.roomManager = roomManager;
         this.barrierManager = barrierManager;
         this.messageManager = messageManager;
+        this.manualBarrierManager = manualBarrierManager;
     }
 
     @EventHandler
@@ -47,9 +51,6 @@ public class RoomEntryListener implements Listener {
 
         Room roomActual = roomManager.encontrarRoomPorUbicacion(event.getTo());
 
-        // Chequeo de cierre de barrera: se hace SIEMPRE que el jugador este
-        // dentro de una room, no solo en el instante exacto de entrar, para
-        // no depender de que los 2 jugadores entren en el mismo tick.
         if (roomActual != null && roomActual.isBarreraDefinida() && !barrierManager.barreraEstaCerrada(roomActual)) {
             List<Player> presentes = barrierManager.obtenerJugadoresEnRoom(roomActual);
             if (presentes.size() >= 2) {
@@ -68,6 +69,11 @@ public class RoomEntryListener implements Listener {
             Room roomAnterior = roomManager.obtener(nombreRoomAnterior);
             if (roomAnterior != null) {
                 quitarEfectos(jugador, roomAnterior);
+
+                if (manualBarrierManager.esRompedor(roomAnterior, uuid)) {
+                    manualBarrierManager.onRompedorSalio(roomAnterior);
+                }
+
                 String mensajeSalida = messageManager.get("salida").replace("%room%", roomAnterior.getName());
                 jugador.sendMessage(mensajeSalida);
             }
@@ -80,6 +86,10 @@ public class RoomEntryListener implements Listener {
         }
 
         List<Player> jugadoresDentro = barrierManager.obtenerJugadoresEnRoom(roomActual);
+
+        if (manualBarrierManager.esRompedor(roomActual, uuid)) {
+            manualBarrierManager.onRompedorVolvio(roomActual, jugadoresDentro, jugador);
+        }
 
         boolean roomOcupadaPeleando = jugadoresDentro.size() > 2;
 
@@ -124,4 +134,4 @@ public class RoomEntryListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         roomActualPorJugador.remove(event.getPlayer().getUniqueId());
     }
-                }
+                        }
