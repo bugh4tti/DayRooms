@@ -3,6 +3,8 @@ package com.dayrooms.model;
 import org.bukkit.Location;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +27,8 @@ public class Room {
 
     private Location teleportLocation;
     private boolean teleportZoneDefinida = false;
+
+    private final Map<String, EffectData> efectos = new LinkedHashMap<>();
 
     public Room(String name, UUID owner) {
         this.name = name;
@@ -116,18 +120,4 @@ public class Room {
     }
 
     public void setTeleportLocation(Location teleportLocation) {
-        this.teleportLocation = teleportLocation;
-    }
-
-    public boolean isTeleportZoneDefinida() {
-        return teleportZoneDefinida;
-    }
-
-    public void setTeleportZoneDefinida(boolean teleportZoneDefinida) {
-        this.teleportZoneDefinida = teleportZoneDefinida;
-    }
-
-    public boolean isCompleta() {
-        return esquinasDefinidas && barreraDefinida;
-    }
-}
+        this.teleportLoc
