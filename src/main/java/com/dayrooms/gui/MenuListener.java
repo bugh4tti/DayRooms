@@ -2,6 +2,7 @@ package com.dayrooms.gui;
 
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.SelectionManager;
+import com.dayrooms.model.Room;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,36 +40,50 @@ public class MenuListener implements Listener {
         switch (event.getRawSlot()) {
             case MainMenu.SLOT_CREAR_ROOM -> {
                 jugador.closeInventory();
-                jugador.sendMessage("§7Escribí: §e/dayrooms create <nombre>");
+                jugador.sendMessage("Escribi: /dayrooms create <nombre>");
             }
             case MainMenu.SLOT_MIS_ROOMS -> {
                 jugador.closeInventory();
-                jugador.sendMessage("§7Abriendo listado de tus rooms...");
-                // TODO: sub-GUI con roomManager.listarDeJugador(jugador.getUniqueId())
+                jugador.openInventory(RoomListMenu.construir(roomManager.listarDeJugador(jugador.getUniqueId())));
             }
             case MainMenu.SLOT_EFFECTS -> {
                 jugador.closeInventory();
-                jugador.sendMessage("§7Abriendo menú de efectos...");
-                // TODO: EffectsMenu
+                String nombreRoom = selectionManager.getRoomEnEdicion(jugador.getUniqueId());
+                if (nombreRoom == null) {
+                    jugador.sendMessage("Primero crea o edita una room: /dayrooms create <nombre>");
+                    return;
+                }
+                Room room = roomManager.obtener(nombreRoom);
+                if (room == null) {
+                    jugador.sendMessage("Esa room ya no existe.");
+                    return;
+                }
+                jugador.openInventory(EffectsMenu.construir(room));
             }
             case MainMenu.SLOT_WAND -> {
                 jugador.closeInventory();
                 if (!validarRoomEnEdicion(jugador)) return;
-                jugador.getInventory().addItem(item(Material.GOLDEN_AXE, "§6§l⛏ Wand de Room"));
+                jugador.getInventory().addItem(item(Material.GOLDEN_AXE, "Wand de Room"));
                 selectionManager.setModo(jugador.getUniqueId(), SelectionManager.Modo.ESQUINAS);
-                jugador.sendMessage("§6§l⛏ §7Recibiste la wand. Click der. = lado 1, click izq. = lado 2.");
+                jugador.sendMessage("Recibiste la wand. Click der. = lado 1, click izq. = lado 2.");
             }
             case MainMenu.SLOT_BARRIER -> {
                 jugador.closeInventory();
                 if (!validarRoomEnEdicion(jugador)) return;
-                jugador.getInventory().addItem(item(Material.IRON_HOE, "§f§l▦ Barrier Tool"));
+                jugador.getInventory().addItem(item(Material.IRON_HOE, "Barrier Tool"));
                 selectionManager.setModo(jugador.getUniqueId(), SelectionManager.Modo.BARRERA);
-                jugador.sendMessage("§f§l▦ §7Recibiste la herramienta de barrera.");
+                jugador.sendMessage("Recibiste la herramienta de barrera.");
+            }
+            case MainMenu.SLOT_TELEPORT -> {
+                jugador.closeInventory();
+                if (!validarRoomEnEdicion(jugador)) return;
+                jugador.getInventory().addItem(item(Material.DIAMOND_PICKAXE, "Teleport Tool"));
+                selectionManager.setModo(jugador.getUniqueId(), SelectionManager.Modo.TELEPORT);
+                jugador.sendMessage("Recibiste el pico. Click der. o izq. para marcar la zona de teleport.");
             }
             case MainMenu.SLOT_RELOAD -> {
                 jugador.closeInventory();
-                jugador.sendMessage("§c§l⟲ §7Recargando configuración...");
-                // TODO: reload de config.yml y rooms.yml
+                jugador.sendMessage("Usa /dayrooms reload para recargar la configuracion.");
             }
             default -> {
             }
@@ -77,7 +92,7 @@ public class MenuListener implements Listener {
 
     private boolean validarRoomEnEdicion(Player jugador) {
         if (selectionManager.getRoomEnEdicion(jugador.getUniqueId()) == null) {
-            jugador.sendMessage("§cPrimero creá o editá una room: §e/dayrooms create <nombre>");
+            jugador.sendMessage("Primero crea o edita una room: /dayrooms create <nombre>");
             return false;
         }
         return true;
@@ -90,4 +105,4 @@ public class MenuListener implements Listener {
         item.setItemMeta(meta);
         return item;
     }
-                    }
+                        }
