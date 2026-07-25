@@ -16,6 +16,7 @@ public class Room {
 
     private boolean keepInventory = false;
     private boolean utilidadesHabilitadas = true;
+    private boolean comandosHabilitados = true;
 
     private Location esquina1;
     private Location esquina2;
@@ -65,6 +66,14 @@ public class Room {
 
     public void setUtilidadesHabilitadas(boolean utilidadesHabilitadas) {
         this.utilidadesHabilitadas = utilidadesHabilitadas;
+    }
+
+    public boolean isComandosHabilitados() {
+        return comandosHabilitados;
+    }
+
+    public void setComandosHabilitados(boolean comandosHabilitados) {
+        this.comandosHabilitados = comandosHabilitados;
     }
 
     public Location getEsquina1() {
@@ -142,4 +151,4 @@ public class Room {
     public EffectData obtenerOCrearEfecto(String key) {
         return efectos.computeIfAbsent(key, k -> new EffectData(0, 0));
     }
-    }
+}
