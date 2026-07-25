@@ -11,71 +11,82 @@ import java.util.Collection;
 
 public class MainMenu {
 
-    public static final String TITULO = "§b§lDayRooms §7» Menú principal";
+    public static final String TITULO = "DayRooms - Menu principal";
     public static final int TAMANIO = 27;
 
     public static final int SLOT_CREAR_ROOM = 10;
     public static final int SLOT_MIS_ROOMS = 12;
     public static final int SLOT_EFFECTS = 14;
     public static final int SLOT_WAND = 16;
-    public static final int SLOT_BARRIER = 20;
-    public static final int SLOT_RELOAD = 24;
+    public static final int SLOT_BARRIER = 19;
+    public static final int SLOT_TELEPORT = 21;
+    public static final int SLOT_RELOAD = 23;
 
     public static Inventory construir(Player jugador, Collection<Room> misRooms) {
         Inventory inv = Bukkit.createInventory(null, TAMANIO, TITULO);
 
         inv.setItem(SLOT_CREAR_ROOM, new ItemBuilder(Material.EMERALD_BLOCK)
-                .nombre("§a§l+ Crear Room")
+                .nombre("+ Crear Room")
                 .lore(
-                        "§7Crea una nueva room y entra",
-                        "§7automáticamente en modo edición.",
+                        "Crea una nueva room y entra",
+                        "automaticamente en modo edicion.",
                         "",
-                        "§eClick para crear"
+                        "Click para crear"
                 ).build());
 
         inv.setItem(SLOT_MIS_ROOMS, itemMisRooms(misRooms.size()));
 
         inv.setItem(SLOT_EFFECTS, new ItemBuilder(Material.POTION)
-                .nombre("§d§l✦ Efectos")
+                .nombre("Efectos")
                 .lore(
-                        "§7Fuerza, velocidad, invisibilidad,",
-                        "§7visión nocturna, regeneración y más.",
-                        "§7Configurá nivel (1-10) y duración.",
+                        "Fuerza, velocidad, invisibilidad,",
+                        "vision nocturna, regeneracion y mas.",
+                        "Configura nivel (1-10) y duracion.",
                         "",
-                        "§eClick para abrir"
+                        "Click para abrir"
                 ).build());
 
         inv.setItem(SLOT_WAND, new ItemBuilder(Material.GOLDEN_AXE)
-                .nombre("§6§l⛏ Wand de selección")
+                .nombre("Wand de seleccion")
                 .lore(
-                        "§7Te da el hacha para marcar",
-                        "§7las 2 esquinas de la room.",
-                        "§7Click der. = lado 1  |  Click izq. = lado 2",
+                        "Te da el hacha para marcar",
+                        "las 2 esquinas de la room.",
+                        "Click der. = lado 1  |  Click izq. = lado 2",
                         "",
-                        "§eClick para recibirla"
+                        "Click para recibirla"
                 ).build());
 
         inv.setItem(SLOT_BARRIER, new ItemBuilder(Material.IRON_HOE)
-                .nombre("§f§l▦ Barrier")
+                .nombre("Barrier")
                 .lore(
-                        "§7Te da la azada para marcar",
-                        "§7dónde se cierra con cristal.",
-                        "§7Click der. = lado 1  |  Click izq. = lado 2",
+                        "Te da la azada para marcar",
+                        "donde se cierra con cristal.",
+                        "Click der. = lado 1  |  Click izq. = lado 2",
                         "",
-                        "§eClick para recibirla"
+                        "Click para recibirla"
+                ).build());
+
+        inv.setItem(SLOT_TELEPORT, new ItemBuilder(Material.DIAMOND_PICKAXE)
+                .nombre("Teleport zone")
+                .lore(
+                        "Te da el pico para marcar",
+                        "a donde se manda a quien intenta",
+                        "entrar a una room ocupada.",
+                        "",
+                        "Click para recibirlo"
                 ).build());
 
         inv.setItem(SLOT_RELOAD, new ItemBuilder(Material.REDSTONE)
-                .nombre("§c§l⟲ Reload")
+                .nombre("Reload")
                 .lore(
-                        "§7Reinicia la configuración",
-                        "§7del plugin sin bajar el server.",
+                        "Reinicia la configuracion",
+                        "del plugin sin bajar el server.",
                         "",
-                        "§eClick para reiniciar"
+                        "Click para reiniciar"
                 ).build());
 
         ItemStack relleno = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).nombre(" ").build();
-        for (int slot : new int[]{0,1,2,3,4,5,6,7,8, 9,17,18,26, 19,21,22,23,25}) {
+        for (int slot : new int[]{0,1,2,3,4,5,6,7,8, 9,17,18,20,22,24,25,26}) {
             inv.setItem(slot, relleno);
         }
 
@@ -84,12 +95,12 @@ public class MainMenu {
 
     private static ItemStack itemMisRooms(int cantidad) {
         return new ItemBuilder(Material.ENDER_CHEST)
-                .nombre("§b§l⌂ Mis Rooms §7(" + cantidad + ")")
+                .nombre("Mis Rooms (" + cantidad + ")")
                 .lore(
-                        "§7Ver y gestionar las rooms",
-                        "§7de las que sos owner o invitado.",
+                        "Ver y gestionar las rooms",
+                        "de las que sos owner o invitado.",
                         "",
-                        "§eClick para ver el listado"
+                        "Click para ver el listado"
                 ).build();
     }
-}
+                    }
