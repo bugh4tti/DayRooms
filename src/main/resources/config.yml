@@ -4,6 +4,7 @@ mensajes:
   salida: "&#0096FF&l[!] &#0096FFSaliste de la room %room%!"
   barrera-countdown: "&e&lLa barrera se romperá en &c&l%seg%s&e&l!"
   barrera-rota: "&a&l¡A pelear!"
+  barrera-recerrada: "&a&l¡La barrera se cerró nuevamente, sigan pvpeando!"
   no-tienes-room-en-edicion: "&cPrimero creá o editá una room: &e/dayrooms create <nombre>"
   keepinventory-activado: "&a✔ Keep inventory activado en la room %room%"
   keepinventory-desactivado: "&c✘ Keep inventory desactivado en la room %room%"
