@@ -120,4 +120,26 @@ public class Room {
     }
 
     public void setTeleportLocation(Location teleportLocation) {
-        this.teleportLoc
+        this.teleportLocation = teleportLocation;
+    }
+
+    public boolean isTeleportZoneDefinida() {
+        return teleportZoneDefinida;
+    }
+
+    public void setTeleportZoneDefinida(boolean teleportZoneDefinida) {
+        this.teleportZoneDefinida = teleportZoneDefinida;
+    }
+
+    public boolean isCompleta() {
+        return esquinasDefinidas && barreraDefinida;
+    }
+
+    public Map<String, EffectData> getEfectos() {
+        return efectos;
+    }
+
+    public EffectData obtenerOCrearEfecto(String key) {
+        return efectos.computeIfAbsent(key, k -> new EffectData(0, 0));
+    }
+    }
