@@ -46,6 +46,17 @@ public class RoomEntryListener implements Listener {
         UUID uuid = jugador.getUniqueId();
 
         Room roomActual = roomManager.encontrarRoomPorUbicacion(event.getTo());
+
+        // Chequeo de cierre de barrera: se hace SIEMPRE que el jugador este
+        // dentro de una room, no solo en el instante exacto de entrar, para
+        // no depender de que los 2 jugadores entren en el mismo tick.
+        if (roomActual != null && roomActual.isBarreraDefinida() && !barrierManager.barreraEstaCerrada(roomActual)) {
+            List<Player> presentes = barrierManager.obtenerJugadoresEnRoom(roomActual);
+            if (presentes.size() >= 2) {
+                barrierManager.colocarBarrera(roomActual);
+            }
+        }
+
         String nombreRoomActual = roomActual != null ? roomActual.getName() : null;
         String nombreRoomAnterior = roomActualPorJugador.get(uuid);
 
@@ -53,7 +64,6 @@ public class RoomEntryListener implements Listener {
             return;
         }
 
-        // Salio de una room: quitar efectos y avisar
         if (nombreRoomAnterior != null) {
             Room roomAnterior = roomManager.obtener(nombreRoomAnterior);
             if (roomAnterior != null) {
@@ -77,11 +87,6 @@ public class RoomEntryListener implements Listener {
             jugador.teleport(roomActual.getTeleportLocation());
             roomActualPorJugador.remove(uuid);
             return;
-        }
-
-        // Si con este jugador ya hay 2 adentro, se cierra la barrera para contener la pelea
-        if (jugadoresDentro.size() == 2 && roomActual.isBarreraDefinida()) {
-            barrierManager.colocarBarrera(roomActual);
         }
 
         aplicarEfectos(jugador, roomActual);
@@ -119,4 +124,4 @@ public class RoomEntryListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         roomActualPorJugador.remove(event.getPlayer().getUniqueId());
     }
-        }
+                }
