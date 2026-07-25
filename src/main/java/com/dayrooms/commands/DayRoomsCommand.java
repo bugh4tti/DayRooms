@@ -6,7 +6,9 @@ import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.RoomPersistenceManager;
 import com.dayrooms.managers.SelectionManager;
+import com.dayrooms.model.EffectData;
 import com.dayrooms.model.Room;
+import com.dayrooms.gui.EffectsMenu;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -54,6 +56,8 @@ public class DayRoomsCommand implements CommandExecutor {
             case "teleport" -> darTeleportTool(jugador);
             case "keepinventory" -> setKeepInventory(jugador, args);
             case "utilities" -> setUtilities(jugador, args);
+            case "commands" -> setComandos(jugador, args);
+            case "effect" -> manejarEffect(jugador, args);
             case "save" -> guardar(jugador, args);
             case "reload" -> recargar(jugador);
             case "help" -> enviarAyuda(jugador);
@@ -165,6 +169,77 @@ public class DayRoomsCommand implements CommandExecutor {
         jugador.sendMessage(messageManager.get(key).replace("%room%", room.getName()));
     }
 
+    private void setComandos(Player jugador, String[] args) {
+        if (args.length < 3) {
+            jugador.sendMessage(messageManager.get("uso-true-false").replace("%subcomando%", "commands"));
+            return;
+        }
+        Room room = roomManager.obtener(args[1]);
+        if (room == null) {
+            jugador.sendMessage(messageManager.get("room-no-existe"));
+            return;
+        }
+        boolean valor = Boolean.parseBoolean(args[2]);
+        room.setComandosHabilitados(valor);
+
+        String key = valor ? "comandos-activado" : "comandos-desactivado";
+        jugador.sendMessage(messageManager.get(key).replace("%room%", room.getName()));
+    }
+
+    private void manejarEffect(Player jugador, String[] args) {
+        if (args.length < 3) {
+            jugador.sendMessage("Uso: /dayrooms effect <add|remove|set> <room> <efecto> [nivel] [tiempo]");
+            return;
+        }
+
+        String accion = args[1].toLowerCase();
+        Room room = roomManager.obtener(args[2]);
+        if (room == null) {
+            jugador.sendMessage(messageManager.get("room-no-existe"));
+            return;
+        }
+
+        if (accion.equals("remove")) {
+            if (args.length < 4) {
+                jugador.sendMessage("Uso: /dayrooms effect remove <room> <efecto>");
+                return;
+            }
+            String key = args[3].toUpperCase();
+            room.obtenerOCrearEfecto(key).setNivel(0);
+            jugador.sendMessage("Efecto " + key + " removido de la room " + room.getName());
+            return;
+        }
+
+        if (accion.equals("add") || accion.equals("set")) {
+            if (args.length < 6) {
+                jugador.sendMessage("Uso: /dayrooms effect " + accion + " <room> <efecto> <nivel> <tiempo>");
+                return;
+            }
+            String key = args[3].toUpperCase();
+            int nivel;
+            long tiempo;
+            try {
+                nivel = Integer.parseInt(args[4]);
+                tiempo = Long.parseLong(args[5]);
+            } catch (NumberFormatException e) {
+                jugador.sendMessage("Nivel y tiempo deben ser numeros.");
+                return;
+            }
+            if (nivel < 0 || nivel > 10) {
+                jugador.sendMessage("El nivel debe estar entre 0 y 10.");
+                return;
+            }
+
+            EffectData datos = room.obtenerOCrearEfecto(key);
+            datos.setNivel(nivel);
+            datos.setDuracionSegundos(tiempo);
+            jugador.sendMessage("Efecto " + key + " nivel " + nivel + " por " + tiempo + "s en la room " + room.getName());
+            return;
+        }
+
+        jugador.sendMessage("Accion invalida. Usa add, remove o set.");
+    }
+
     private void guardar(Player jugador, String[] args) {
         if (args.length < 2) {
             jugador.sendMessage("Uso: /dayrooms save <room>");
@@ -195,6 +270,8 @@ public class DayRoomsCommand implements CommandExecutor {
         jugador.sendMessage("/dayrooms teleport - Herramienta para marcar zona de teleport");
         jugador.sendMessage("/dayrooms keepinventory <room> <true|false>");
         jugador.sendMessage("/dayrooms utilities <room> <true|false>");
+        jugador.sendMessage("/dayrooms commands <room> <true|false>");
+        jugador.sendMessage("/dayrooms effect <add|remove|set> <room> <efecto> [nivel] [tiempo]");
         jugador.sendMessage("/dayrooms save <room> - Guarda los cambios de una room");
         jugador.sendMessage("/dayrooms reload - Recarga la configuracion");
         jugador.sendMessage("Creador: SoyBughatti");
@@ -215,4 +292,4 @@ public class DayRoomsCommand implements CommandExecutor {
         item.setItemMeta(meta);
         return item;
     }
-        }
+                                    }
