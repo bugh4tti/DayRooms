@@ -12,10 +12,6 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
 
-/**
- * Guarda y carga las rooms desde/hacia rooms.yml, en la carpeta
- * de datos del plugin (plugins/DayRooms/rooms.yml).
- */
 public class RoomPersistenceManager {
 
     private final JavaPlugin plugin;
@@ -29,6 +25,15 @@ public class RoomPersistenceManager {
     public void guardarUna(Room room) {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(archivo);
         escribirRoom(yaml, room);
+        guardarArchivo(yaml);
+    }
+
+    public void eliminarUna(String nombreRoom) {
+        if (!archivo.exists()) {
+            return;
+        }
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(archivo);
+        yaml.set("rooms." + nombreRoom, null);
         guardarArchivo(yaml);
     }
 
@@ -119,4 +124,4 @@ public class RoomPersistenceManager {
             plugin.getLogger().log(Level.SEVERE, "No se pudo guardar rooms.yml", e);
         }
     }
-              }
+                }
