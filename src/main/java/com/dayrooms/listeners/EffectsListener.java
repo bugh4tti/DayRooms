@@ -121,4 +121,4 @@ public class EffectsListener implements Listener {
 
         esperandoDuracion.remove(jugador.getUniqueId());
     }
-            }
+                }
