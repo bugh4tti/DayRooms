@@ -1,5 +1,6 @@
 package com.dayrooms.commands;
 
+import com.dayrooms.gui.EffectsMenu;
 import com.dayrooms.managers.RoomManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,11 +13,11 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
     private static final List<String> SUBCOMANDOS = List.of(
             "create", "editor", "delete", "wand", "barrier", "teleport",
-            "keepinventory", "utilities", "save", "reload", "help"
+            "keepinventory", "utilities", "commands", "effect", "save", "reload", "help"
     );
 
-    private static final List<String> REQUIEREN_ROOM = List.of(
-            "editor", "delete", "keepinventory", "utilities", "save"
+    private static final List<String> REQUIEREN_ROOM_ARG2 = List.of(
+            "editor", "delete", "keepinventory", "utilities", "commands", "save"
     );
 
     private final RoomManager roomManager;
@@ -39,7 +40,16 @@ public class DayRoomsTabCompleter implements TabCompleter {
             return sugerencias;
         }
 
-        if (args.length == 2 && REQUIEREN_ROOM.contains(args[0].toLowerCase())) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("effect")) {
+            for (String accion : List.of("add", "remove", "set")) {
+                if (accion.startsWith(args[1].toLowerCase())) {
+                    sugerencias.add(accion);
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 2 && REQUIEREN_ROOM_ARG2.contains(args[0].toLowerCase())) {
             String escrito = args[1].toLowerCase();
             for (var room : roomManager.listarTodas()) {
                 if (room.getName().toLowerCase().startsWith(escrito)) {
@@ -49,7 +59,29 @@ public class DayRoomsTabCompleter implements TabCompleter {
             return sugerencias;
         }
 
-        if (args.length == 3 && (args[0].equalsIgnoreCase("keepinventory") || args[0].equalsIgnoreCase("utilities"))) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("effect")) {
+            String escrito = args[2].toLowerCase();
+            for (var room : roomManager.listarTodas()) {
+                if (room.getName().toLowerCase().startsWith(escrito)) {
+                    sugerencias.add(room.getName());
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 4 && args[0].equalsIgnoreCase("effect")) {
+            String escrito = args[3].toUpperCase();
+            for (String[] efecto : EffectsMenu.EFECTOS) {
+                if (efecto[0].startsWith(escrito)) {
+                    sugerencias.add(efecto[0]);
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 3 && (args[0].equalsIgnoreCase("keepinventory")
+                || args[0].equalsIgnoreCase("utilities")
+                || args[0].equalsIgnoreCase("commands"))) {
             sugerencias.add("true");
             sugerencias.add("false");
             return sugerencias;
@@ -57,4 +89,4 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
         return sugerencias;
     }
-  }
+                }
