@@ -12,18 +12,20 @@ import java.util.Collection;
 public class MainMenu {
 
     public static final String TITULO = "DayRooms - Menu principal";
-    public static final int TAMANIO = 27;
+    public static final int TAMANIO = 54;
 
-    public static final int SLOT_CREAR_ROOM = 10;
-    public static final int SLOT_MIS_ROOMS = 12;
-    public static final int SLOT_EFFECTS = 14;
-    public static final int SLOT_WAND = 16;
-    public static final int SLOT_BARRIER = 19;
-    public static final int SLOT_TELEPORT = 21;
-    public static final int SLOT_RELOAD = 23;
+    public static final int SLOT_CREAR_ROOM = 19;
+    public static final int SLOT_MIS_ROOMS = 21;
+    public static final int SLOT_EFFECTS = 23;
+    public static final int SLOT_WAND = 25;
+    public static final int SLOT_BARRIER = 29;
+    public static final int SLOT_TELEPORT = 31;
+    public static final int SLOT_RELOAD = 33;
 
     public static Inventory construir(Player jugador, Collection<Room> misRooms) {
         Inventory inv = Bukkit.createInventory(null, TAMANIO, TITULO);
+
+        rellenarBordes(inv);
 
         inv.setItem(SLOT_CREAR_ROOM, new ItemBuilder(Material.EMERALD_BLOCK)
                 .nombre("+ Crear Room")
@@ -85,12 +87,23 @@ public class MainMenu {
                         "Click para reiniciar"
                 ).build());
 
+        return inv;
+    }
+
+    private static void rellenarBordes(Inventory inv) {
         ItemStack relleno = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).nombre(" ").build();
-        for (int slot : new int[]{0,1,2,3,4,5,6,7,8, 9,17,18,20,22,24,25,26}) {
-            inv.setItem(slot, relleno);
+
+        // Fila superior e inferior completas
+        for (int i = 0; i < 9; i++) {
+            inv.setItem(i, relleno);
+            inv.setItem(45 + i, relleno);
         }
 
-        return inv;
+        // Columnas laterales (izquierda y derecha) en las filas del medio
+        for (int fila = 1; fila < 5; fila++) {
+            inv.setItem(fila * 9, relleno);
+            inv.setItem(fila * 9 + 8, relleno);
+        }
     }
 
     private static ItemStack itemMisRooms(int cantidad) {
@@ -103,4 +116,4 @@ public class MainMenu {
                         "Click para ver el listado"
                 ).build();
     }
-                    }
+            }
