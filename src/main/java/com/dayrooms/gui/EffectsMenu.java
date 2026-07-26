@@ -9,8 +9,8 @@ import org.bukkit.inventory.ItemStack;
 public class EffectsMenu {
 
     public static final String TITULO = "DayRooms - Efectos";
-    public static final int TAMANIO = 27;
-    public static final int SLOT_VOLVER = 22;
+    public static final int TAMANIO = 54;
+    public static final int SLOT_VOLVER = 49;
 
     public static final String[][] EFECTOS = {
             {"FUERZA", "Fuerza", "IRON_SWORD"},
@@ -24,11 +24,13 @@ public class EffectsMenu {
     };
 
     public static int slotDe(int indice) {
-        return 10 + indice;
+        return 19 + indice;
     }
 
     public static Inventory construir(Room room) {
         Inventory inv = Bukkit.createInventory(null, TAMANIO, TITULO);
+
+        rellenarBordes(inv);
 
         for (int i = 0; i < EFECTOS.length; i++) {
             String key = EFECTOS[i][0];
@@ -53,11 +55,20 @@ public class EffectsMenu {
                 .nombre("Volver al menu principal")
                 .build());
 
-        ItemStack relleno = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).nombre(" ").build();
-        for (int slot : new int[]{0,1,2,3,4,5,6,7,8, 9,18,19,20,21,23,24,25,26}) {
-            inv.setItem(slot, relleno);
-        }
-
         return inv;
     }
-          }
+
+    private static void rellenarBordes(Inventory inv) {
+        ItemStack relleno = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).nombre(" ").build();
+
+        for (int i = 0; i < 9; i++) {
+            inv.setItem(i, relleno);
+            inv.setItem(45 + i, relleno);
+        }
+
+        for (int fila = 1; fila < 5; fila++) {
+            inv.setItem(fila * 9, relleno);
+            inv.setItem(fila * 9 + 8, relleno);
+        }
+    }
+        }
