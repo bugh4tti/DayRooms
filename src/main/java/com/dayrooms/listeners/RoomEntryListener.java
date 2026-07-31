@@ -7,6 +7,7 @@ import com.dayrooms.managers.RoomManager;
 import com.dayrooms.model.EffectData;
 import com.dayrooms.model.Room;
 import com.dayrooms.utils.EffectTypeMapper;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -76,6 +77,7 @@ public class RoomEntryListener implements Listener {
 
                 String mensajeSalida = messageManager.get("salida").replace("%room%", roomAnterior.getName());
                 jugador.sendMessage(mensajeSalida);
+                jugador.playSound(jugador.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 0.6f);
             }
         }
 
@@ -103,6 +105,7 @@ public class RoomEntryListener implements Listener {
 
         String mensajeEntrada = messageManager.get("entrada").replace("%room%", roomActual.getName());
         jugador.sendMessage(mensajeEntrada);
+        jugador.playSound(jugador.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.6f, 1.4f);
     }
 
     private void aplicarEfectos(Player jugador, Room room) {
@@ -134,4 +137,4 @@ public class RoomEntryListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         roomActualPorJugador.remove(event.getPlayer().getUniqueId());
     }
-                        }
+        }
