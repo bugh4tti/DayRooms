@@ -2,6 +2,7 @@ package com.dayrooms.commands;
 
 import com.dayrooms.gui.EffectsMenu;
 import com.dayrooms.managers.RoomManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -13,7 +14,7 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
     private static final List<String> SUBCOMANDOS = List.of(
             "create", "editor", "delete", "wand", "barrier", "teleport",
-            "keepinventory", "utilities", "commands", "effect", "save", "reload", "help"
+            "keepinventory", "utilities", "commands", "effect", "save", "stats", "reload", "help"
     );
 
     private static final List<String> REQUIEREN_ROOM_ARG2 = List.of(
@@ -35,6 +36,16 @@ public class DayRoomsTabCompleter implements TabCompleter {
             for (String sub : SUBCOMANDOS) {
                 if (sub.startsWith(escrito)) {
                     sugerencias.add(sub);
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("stats")) {
+            String escrito = args[1].toLowerCase();
+            for (var jugadorOnline : Bukkit.getOnlinePlayers()) {
+                if (jugadorOnline.getName().toLowerCase().startsWith(escrito)) {
+                    sugerencias.add(jugadorOnline.getName());
                 }
             }
             return sugerencias;
@@ -89,4 +100,4 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
         return sugerencias;
     }
-                }
+            }
