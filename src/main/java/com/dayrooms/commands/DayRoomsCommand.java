@@ -6,10 +6,12 @@ import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.RoomPersistenceManager;
 import com.dayrooms.managers.SelectionManager;
+import com.dayrooms.managers.StatsManager;
 import com.dayrooms.model.EffectData;
 import com.dayrooms.model.Room;
-import com.dayrooms.gui.EffectsMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,15 +26,17 @@ public class DayRoomsCommand implements CommandExecutor {
     private final BarrierManager barrierManager;
     private final MessageManager messageManager;
     private final RoomPersistenceManager persistenceManager;
+    private final StatsManager statsManager;
 
     public DayRoomsCommand(RoomManager roomManager, SelectionManager selectionManager,
                             BarrierManager barrierManager, MessageManager messageManager,
-                            RoomPersistenceManager persistenceManager) {
+                            RoomPersistenceManager persistenceManager, StatsManager statsManager) {
         this.roomManager = roomManager;
         this.selectionManager = selectionManager;
         this.barrierManager = barrierManager;
         this.messageManager = messageManager;
         this.persistenceManager = persistenceManager;
+        this.statsManager = statsManager;
     }
 
     @Override
@@ -60,6 +64,7 @@ public class DayRoomsCommand implements CommandExecutor {
             case "effect" -> manejarEffect(jugador, args);
             case "save" -> guardar(jugador, args);
             case "reload" -> recargar(jugador);
+            case "stats" -> verStats(jugador, args);
             case "help" -> enviarAyuda(jugador);
             default -> jugador.sendMessage("Subcomando desconocido. Usa /dayrooms help para ver la lista.");
         }
@@ -259,6 +264,18 @@ public class DayRoomsCommand implements CommandExecutor {
         jugador.sendMessage("config.yml recargado correctamente.");
     }
 
+    private void verStats(Player jugador, String[] args) {
+        if (args.length < 2) {
+            int propias = statsManager.getVictorias(jugador.getUniqueId());
+            jugador.sendMessage("Tenes " + propias + " victorias en rooms.");
+            return;
+        }
+        String nombreObjetivo = args[1];
+        OfflinePlayer offline = Bukkit.getOfflinePlayer(nombreObjetivo);
+        int victorias = statsManager.getVictorias(offline.getUniqueId());
+        jugador.sendMessage(nombreObjetivo + " tiene " + victorias + " victorias en rooms.");
+    }
+
     private void enviarAyuda(Player jugador) {
         jugador.sendMessage("--- DayRooms - Ayuda ---");
         jugador.sendMessage("/dayrooms - Abre el menu principal");
@@ -273,6 +290,7 @@ public class DayRoomsCommand implements CommandExecutor {
         jugador.sendMessage("/dayrooms commands <room> <true|false>");
         jugador.sendMessage("/dayrooms effect <add|remove|set> <room> <efecto> [nivel] [tiempo]");
         jugador.sendMessage("/dayrooms save <room> - Guarda los cambios de una room");
+        jugador.sendMessage("/dayrooms stats [jugador] - Ver victorias en rooms");
         jugador.sendMessage("/dayrooms reload - Recarga la configuracion");
         jugador.sendMessage("Creador: SoyBughatti");
     }
@@ -292,4 +310,4 @@ public class DayRoomsCommand implements CommandExecutor {
         item.setItemMeta(meta);
         return item;
     }
-                                    }
+    }
