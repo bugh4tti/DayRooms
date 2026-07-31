@@ -3,6 +3,7 @@ package com.dayrooms.listeners;
 import com.dayrooms.managers.BarrierManager;
 import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
+import com.dayrooms.managers.StatsManager;
 import com.dayrooms.model.Room;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,11 +18,14 @@ public class PvPListener implements Listener {
     private final RoomManager roomManager;
     private final BarrierManager barrierManager;
     private final MessageManager messageManager;
+    private final StatsManager statsManager;
 
-    public PvPListener(RoomManager roomManager, BarrierManager barrierManager, MessageManager messageManager) {
+    public PvPListener(RoomManager roomManager, BarrierManager barrierManager,
+                        MessageManager messageManager, StatsManager statsManager) {
         this.roomManager = roomManager;
         this.barrierManager = barrierManager;
         this.messageManager = messageManager;
+        this.statsManager = statsManager;
     }
 
     @EventHandler
@@ -43,12 +47,16 @@ public class PvPListener implements Listener {
             return;
         }
 
+        statsManager.sumarVictoria(ganador.getUniqueId(), ganador.getName());
+
         String mensaje = messageManager.get("victoria")
                 .replace("%ganador%", ganador.getName())
                 .replace("%room%", room.getName())
                 .replace("%perdedor%", perdedor.getName());
 
         Bukkit.broadcastMessage(mensaje);
+
+        ganador.sendTitle("§a¡Ganaste!", "§7Venciste a §f" + perdedor.getName(), 10, 60, 10);
 
         List<Player> jugadoresEnRoom = barrierManager.obtenerJugadoresEnRoom(room);
         barrierManager.iniciarCountdownPostVictoria(room, jugadoresEnRoom);
