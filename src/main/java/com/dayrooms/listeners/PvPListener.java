@@ -56,7 +56,9 @@ public class PvPListener implements Listener {
 
         Bukkit.broadcastMessage(mensaje);
 
-        ganador.sendTitle("§a¡Ganaste!", "§7Venciste a §f" + perdedor.getName(), 10, 60, 10);
+        String titulo = messageManager.get("victoria-titulo");
+        String subtitulo = messageManager.get("victoria-subtitulo").replace("%perdedor%", perdedor.getName());
+        ganador.sendTitle(titulo, subtitulo, 10, 60, 10);
 
         List<Player> jugadoresEnRoom = barrierManager.obtenerJugadoresEnRoom(room);
         barrierManager.iniciarCountdownPostVictoria(room, jugadoresEnRoom);
