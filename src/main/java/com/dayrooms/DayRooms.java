@@ -17,6 +17,7 @@ import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.RoomPersistenceManager;
 import com.dayrooms.managers.SelectionManager;
+import com.dayrooms.managers.StatsManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DayRooms extends JavaPlugin {
@@ -27,6 +28,7 @@ public class DayRooms extends JavaPlugin {
     private MessageManager messageManager;
     private RoomPersistenceManager persistenceManager;
     private ManualBarrierManager manualBarrierManager;
+    private StatsManager statsManager;
 
     @Override
     public void onEnable() {
@@ -38,16 +40,17 @@ public class DayRooms extends JavaPlugin {
         this.barrierManager = new BarrierManager(this, messageManager);
         this.persistenceManager = new RoomPersistenceManager(this);
         this.manualBarrierManager = new ManualBarrierManager(this, barrierManager, messageManager);
+        this.statsManager = new StatsManager(this);
 
         persistenceManager.cargarTodas(roomManager);
 
-        getCommand("dayrooms").setExecutor(new DayRoomsCommand(roomManager, selectionManager, barrierManager, messageManager, persistenceManager));
+        getCommand("dayrooms").setExecutor(new DayRoomsCommand(roomManager, selectionManager, barrierManager, messageManager, persistenceManager, statsManager));
         getCommand("dayrooms").setTabCompleter(new DayRoomsTabCompleter(roomManager));
 
         getServer().getPluginManager().registerEvents(new MenuListener(roomManager, selectionManager), this);
         getServer().getPluginManager().registerEvents(new SelectionListener(selectionManager, roomManager), this);
         getServer().getPluginManager().registerEvents(new EffectsListener(roomManager, selectionManager), this);
-        getServer().getPluginManager().registerEvents(new PvPListener(roomManager, barrierManager, messageManager), this);
+        getServer().getPluginManager().registerEvents(new PvPListener(roomManager, barrierManager, messageManager, statsManager), this);
         getServer().getPluginManager().registerEvents(new UtilitiesListener(roomManager, messageManager), this);
         getServer().getPluginManager().registerEvents(new RoomEntryListener(roomManager, barrierManager, messageManager, manualBarrierManager), this);
         getServer().getPluginManager().registerEvents(new RoomListListener(roomManager, selectionManager), this);
@@ -84,4 +87,8 @@ public class DayRooms extends JavaPlugin {
     public RoomPersistenceManager getPersistenceManager() {
         return persistenceManager;
     }
-            }
+
+    public StatsManager getStatsManager() {
+        return statsManager;
+    }
+    }
