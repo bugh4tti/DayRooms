@@ -16,3 +16,5 @@ mensajes:
   comandos-bloqueados: "&cNo podés usar comandos dentro de esta room."
   room-no-existe: "&cNo existe una room con ese nombre."
   uso-true-false: "&cUso: /dayrooms %subcomando% <room> <true|false>"
+  victoria-titulo: "&a¡Ganaste!"
+  victoria-subtitulo: "&7Venciste a &f%perdedor%"
