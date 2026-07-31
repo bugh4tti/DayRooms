@@ -3,6 +3,7 @@ package com.dayrooms.managers;
 import com.dayrooms.model.Room;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,12 +28,17 @@ public class BarrierManager {
 
     public void romperBarrera(Room room) {
         rellenarCuboid(room.getBarreraEsquina1(), room.getBarreraEsquina2(), Material.AIR);
+        reproducirSonidoRotura(room);
     }
 
-    /**
-     * Revisa el bloque real de una esquina de la barrera para saber si
-     * ya esta cerrada (evita cerrarla de nuevo en cada movimiento).
-     */
+    private void reproducirSonidoRotura(Room room) {
+        Location loc = room.getBarreraEsquina1();
+        if (loc == null || loc.getWorld() == null) {
+            return;
+        }
+        loc.getWorld().playSound(loc, Sound.BLOCK_GLASS_BREAK, 1.0f, 1.0f);
+    }
+
     public boolean barreraEstaCerrada(Room room) {
         Location loc1 = room.getBarreraEsquina1();
         if (loc1 == null || loc1.getWorld() == null) {
