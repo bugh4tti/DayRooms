@@ -1,6 +1,7 @@
 package com.dayrooms.model;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -17,6 +18,10 @@ public class Room {
     private boolean keepInventory = false;
     private boolean utilidadesHabilitadas = true;
     private boolean comandosHabilitados = true;
+    private boolean pvpHabilitado = true;
+
+    private Material barreraMaterial = Material.GLASS;
+    private final Set<String> comandosBloqueados = new HashSet<>();
 
     private Location esquina1;
     private Location esquina2;
@@ -74,6 +79,38 @@ public class Room {
 
     public void setComandosHabilitados(boolean comandosHabilitados) {
         this.comandosHabilitados = comandosHabilitados;
+    }
+
+    public boolean isPvpHabilitado() {
+        return pvpHabilitado;
+    }
+
+    public void setPvpHabilitado(boolean pvpHabilitado) {
+        this.pvpHabilitado = pvpHabilitado;
+    }
+
+    public Material getBarreraMaterial() {
+        return barreraMaterial;
+    }
+
+    public void setBarreraMaterial(Material barreraMaterial) {
+        this.barreraMaterial = barreraMaterial;
+    }
+
+    public Set<String> getComandosBloqueados() {
+        return comandosBloqueados;
+    }
+
+    public boolean isComandoBloqueado(String comando) {
+        return comandosBloqueados.contains(comando.toLowerCase());
+    }
+
+    public void bloquearComando(String comando) {
+        comandosBloqueados.add(comando.toLowerCase());
+    }
+
+    public void desbloquearComando(String comando) {
+        comandosBloqueados.remove(comando.toLowerCase());
     }
 
     public Location getEsquina1() {
@@ -151,4 +188,4 @@ public class Room {
     public EffectData obtenerOCrearEfecto(String key) {
         return efectos.computeIfAbsent(key, k -> new EffectData(0, 0));
     }
-}
+    }
