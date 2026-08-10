@@ -60,7 +60,11 @@ public class PvPListener implements Listener {
         String subtitulo = messageManager.get("victoria-subtitulo").replace("%perdedor%", perdedor.getName());
         ganador.sendTitle(titulo, subtitulo, 10, 60, 10);
 
+        int segundos = messageManager.getInt("barrera-countdown-segundos", 15);
+        if (segundos > 40) segundos = 40;
+        if (segundos < 1) segundos = 1;
+
         List<Player> jugadoresEnRoom = barrierManager.obtenerJugadoresEnRoom(room);
-        barrierManager.iniciarCountdownPostVictoria(room, jugadoresEnRoom);
+        barrierManager.iniciarCountdownPostVictoria(room, jugadoresEnRoom, segundos);
     }
-}
+            }
