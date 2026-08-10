@@ -3,6 +3,8 @@ package com.dayrooms.listeners;
 import com.dayrooms.managers.RoomManager;
 import com.dayrooms.managers.SelectionManager;
 import com.dayrooms.model.Room;
+import com.dayrooms.utils.ParticleUtils;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,13 +44,13 @@ public class SelectionListener implements Listener {
 
         String nombreRoom = selectionManager.getRoomEnEdicion(uuid);
         if (nombreRoom == null) {
-            jugador.sendMessage("§cPrimero tenés que estar editando una room. Usá §e/dayrooms editor <nombre>");
+            jugador.sendMessage("Primero tenes que estar editando una room. Usa /dayrooms editor <nombre>");
             return;
         }
 
         Room room = roomManager.obtener(nombreRoom);
         if (room == null) {
-            jugador.sendMessage("§cLa room que estabas editando ya no existe.");
+            jugador.sendMessage("La room que estabas editando ya no existe.");
             return;
         }
 
@@ -66,19 +68,21 @@ public class SelectionListener implements Listener {
     private void manejarEsquinas(Player jugador, Room room, Action action, Location loc) {
         UUID uuid = jugador.getUniqueId();
 
+        ParticleUtils.spawnColor(loc, Color.LIME);
+
         if (action == Action.RIGHT_CLICK_BLOCK) {
             selectionManager.marcarLado1(uuid, loc);
-            jugador.sendMessage("§a✔ Lado 1 de la room marcado.");
+            jugador.sendMessage("Lado 1 de la room marcado.");
         } else {
             selectionManager.marcarLado2(uuid, loc);
-            jugador.sendMessage("§a✔ Lado 2 de la room marcado.");
+            jugador.sendMessage("Lado 2 de la room marcado.");
         }
 
         if (selectionManager.tieneAmbosLados(uuid)) {
             room.setEsquina1(selectionManager.getLado1(uuid));
             room.setEsquina2(selectionManager.getLado2(uuid));
             room.setEsquinasDefinidas(true);
-            jugador.sendMessage("§b§l¡Esquinas de la room §f" + room.getName() + "§b§l guardadas!");
+            jugador.sendMessage("Esquinas de la room " + room.getName() + " guardadas!");
             selectionManager.limpiarSeleccion(uuid);
         }
     }
@@ -86,27 +90,31 @@ public class SelectionListener implements Listener {
     private void manejarBarrera(Player jugador, Room room, Action action, Location loc) {
         UUID uuid = jugador.getUniqueId();
 
+        ParticleUtils.spawnColor(loc, Color.RED);
+
         if (action == Action.RIGHT_CLICK_BLOCK) {
             selectionManager.marcarLado1(uuid, loc);
-            jugador.sendMessage("§a✔ Lado 1 de la barrera marcado.");
+            jugador.sendMessage("Lado 1 de la barrera marcado.");
         } else {
             selectionManager.marcarLado2(uuid, loc);
-            jugador.sendMessage("§a✔ Lado 2 de la barrera marcado.");
+            jugador.sendMessage("Lado 2 de la barrera marcado.");
         }
 
         if (selectionManager.tieneAmbosLados(uuid)) {
             room.setBarreraEsquina1(selectionManager.getLado1(uuid));
             room.setBarreraEsquina2(selectionManager.getLado2(uuid));
             room.setBarreraDefinida(true);
-            jugador.sendMessage("§b§l¡Barrera de la room §f" + room.getName() + "§b§l guardada!");
+            jugador.sendMessage("Barrera de la room " + room.getName() + " guardada!");
             selectionManager.limpiarSeleccion(uuid);
         }
     }
 
     private void manejarTeleport(Player jugador, Room room, Location loc) {
+        ParticleUtils.spawnColor(loc, Color.AQUA);
+
         room.setTeleportLocation(loc);
         room.setTeleportZoneDefinida(true);
-        jugador.sendMessage("§b§l¡Zona de teleport de la room §f" + room.getName() + "§b§l guardada!");
+        jugador.sendMessage("Zona de teleport de la room " + room.getName() + " guardada!");
         selectionManager.limpiarSeleccion(jugador.getUniqueId());
     }
-    }
+        }
