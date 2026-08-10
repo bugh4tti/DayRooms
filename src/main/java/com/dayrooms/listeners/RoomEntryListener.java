@@ -72,7 +72,9 @@ public class RoomEntryListener implements Listener {
                 quitarEfectos(jugador, roomAnterior);
 
                 if (manualBarrierManager.esRompedor(roomAnterior, uuid)) {
-                    manualBarrierManager.onRompedorSalio(roomAnterior);
+                    List<Player> restantes = barrierManager.obtenerJugadoresEnRoom(roomAnterior);
+                    int segundos = messageManager.getInt("barrera-rotura-manual-segundos", 10);
+                    manualBarrierManager.onRompedorSalio(roomAnterior, restantes, segundos);
                 }
 
                 String mensajeSalida = messageManager.get("salida").replace("%room%", roomAnterior.getName());
@@ -137,4 +139,4 @@ public class RoomEntryListener implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         roomActualPorJugador.remove(event.getPlayer().getUniqueId());
     }
-        }
+            }
