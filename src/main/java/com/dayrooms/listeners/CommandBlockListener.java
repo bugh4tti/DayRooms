@@ -20,10 +20,10 @@ public class CommandBlockListener implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        String mensaje = event.getMessage().toLowerCase();
+        String mensaje = event.getMessage();
 
-        // El comando del propio plugin siempre se permite (para poder usar /dayrooms reload, etc.)
-        if (mensaje.startsWith("/dayrooms")) {
+        if (mensaje.toLowerCase().startsWith("/dayrooms") || mensaje.toLowerCase().startsWith("/dr ")
+                || mensaje.equalsIgnoreCase("/dr")) {
             return;
         }
 
@@ -36,6 +36,20 @@ public class CommandBlockListener implements Listener {
         if (!room.isComandosHabilitados()) {
             event.setCancelled(true);
             jugador.sendMessage(messageManager.get("comandos-bloqueados"));
+            return;
         }
+
+        String comando = extraerComando(mensaje);
+        if (room.isComandoBloqueado(comando)) {
+            event.setCancelled(true);
+            jugador.sendMessage(messageManager.get("comandos-bloqueados"));
+        }
+    }
+
+    private String extraerComando(String mensaje) {
+        String sinBarra = mensaje.substring(1);
+        int espacio = sinBarra.indexOf(' ');
+        String base = espacio == -1 ? sinBarra : sinBarra.substring(0, espacio);
+        return base.toLowerCase();
     }
 }
