@@ -23,7 +23,7 @@ public class BarrierManager {
     }
 
     public void colocarBarrera(Room room) {
-        rellenarCuboid(room.getBarreraEsquina1(), room.getBarreraEsquina2(), Material.GLASS);
+        rellenarCuboid(room.getBarreraEsquina1(), room.getBarreraEsquina2(), room.getBarreraMaterial());
     }
 
     public void romperBarrera(Room room) {
@@ -44,7 +44,7 @@ public class BarrierManager {
         if (loc1 == null || loc1.getWorld() == null) {
             return false;
         }
-        return loc1.getBlock().getType() == Material.GLASS;
+        return loc1.getBlock().getType() == room.getBarreraMaterial();
     }
 
     private void rellenarCuboid(Location loc1, Location loc2, Material material) {
@@ -95,11 +95,11 @@ public class BarrierManager {
         return encontrados;
     }
 
-    public void iniciarCountdownPostVictoria(Room room, List<Player> jugadoresEnRoom) {
+    public void iniciarCountdownPostVictoria(Room room, List<Player> jugadoresEnRoom, int segundosTotales) {
         colocarBarrera(room);
 
         new BukkitRunnable() {
-            int segundosRestantes = 15;
+            int segundosRestantes = segundosTotales;
 
             @Override
             public void run() {
