@@ -13,8 +13,23 @@ mensajes:
   utilities-bloqueado: "&cNo podés usar lana/tela en esta room (utilities desactivado)."
   comandos-activado: "&a✔ Comandos habilitados en la room %room%"
   comandos-desactivado: "&c✘ Comandos deshabilitados en la room %room%"
-  comandos-bloqueados: "&cNo podés usar comandos dentro de esta room."
+  comandos-bloqueados: "&cNo podés usar ese comando dentro de esta room."
+  pvp-activado: "&a✔ PvP activado en la room %room%"
+  pvp-desactivado: "&c✘ PvP desactivado en la room %room%"
   room-no-existe: "&cNo existe una room con ese nombre."
   uso-true-false: "&cUso: /dayrooms %subcomando% <room> <true|false>"
   victoria-titulo: "&a¡Ganaste!"
   victoria-subtitulo: "&7Venciste a &f%perdedor%"
+
+# Segundos del countdown despues de ganar un 1v1 (maximo 40)
+barrera-countdown-segundos: 15
+
+# Segundos de gracia si un admin rompe manualmente el cristal y se va
+barrera-rotura-manual-segundos: 10
+
+# Comandos que se pueden bloquear individualmente por room con /dayrooms commands <room> blocker
+comandos-importantes:
+  - pv
+  - spawn
+  - hub
+  - lobby
