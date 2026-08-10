@@ -3,6 +3,7 @@ package com.dayrooms.managers;
 import com.dayrooms.model.Room;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
@@ -34,14 +35,40 @@ public class ManualBarrierManager {
         return rompedor != null && rompedor.equals(jugador);
     }
 
-    public void onRompedorSalio(Room room) {
+    public void onRompedorSalio(Room room, List<Player> jugadoresRestantes, int segundosTotales) {
         cancelarTarea(room.getName());
 
-        BukkitTask tarea = plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            barrierManager.romperBarrera(room);
-            rompedorPorRoom.remove(room.getName());
-            tareasPendientes.remove(room.getName());
-        }, 10L * 20L);
+        BukkitTask tarea = new BukkitRunnable() {
+            int segundosRestantes = segundosTotales;
+
+            @Override
+            public void run() {
+                if (segundosRestantes <= 0) {
+                    barrierManager.romperBarrera(room);
+                    String mensajeRota = messageManager.get("barrera-rota");
+                    for (Player p : jugadoresRestantes) {
+                        if (p.isOnline()) {
+                            p.sendMessage(mensajeRota);
+                        }
+                    }
+                    rompedorPorRoom.remove(room.getName());
+                    tareasPendientes.remove(room.getName());
+                    this.cancel();
+                    return;
+                }
+
+                String mensaje = messageManager.get("barrera-countdown")
+                        .replace("%seg%", String.valueOf(segundosRestantes));
+
+                for (Player p : jugadoresRestantes) {
+                    if (p.isOnline()) {
+                        p.sendMessage(mensaje);
+                    }
+                }
+
+                segundosRestantes--;
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
 
         tareasPendientes.put(room.getName(), tarea);
     }
@@ -66,4 +93,4 @@ public class ManualBarrierManager {
             tarea.cancel();
         }
     }
-                                }
+                    }
