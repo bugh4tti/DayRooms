@@ -1,8 +1,8 @@
 package com.dayrooms.commands;
 
 import com.dayrooms.gui.EffectsMenu;
+import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -14,17 +14,20 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
     private static final List<String> SUBCOMANDOS = List.of(
             "create", "editor", "delete", "wand", "barrier", "teleport",
-            "keepinventory", "utilities", "commands", "effect", "save", "stats", "reload", "help"
+            "keepinventory", "utilities", "commands", "effect", "pvp", "blocktype",
+            "save", "stats", "reload", "help"
     );
 
     private static final List<String> REQUIEREN_ROOM_ARG2 = List.of(
-            "editor", "delete", "keepinventory", "utilities", "commands", "save"
+            "editor", "delete", "keepinventory", "utilities", "commands", "pvp", "blocktype", "save"
     );
 
     private final RoomManager roomManager;
+    private final MessageManager messageManager;
 
-    public DayRoomsTabCompleter(RoomManager roomManager) {
+    public DayRoomsTabCompleter(RoomManager roomManager, MessageManager messageManager) {
         this.roomManager = roomManager;
+        this.messageManager = messageManager;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
         if (args.length == 2 && args[0].equalsIgnoreCase("stats")) {
             String escrito = args[1].toLowerCase();
-            for (var jugadorOnline : Bukkit.getOnlinePlayers()) {
+            for (var jugadorOnline : org.bukkit.Bukkit.getOnlinePlayers()) {
                 if (jugadorOnline.getName().toLowerCase().startsWith(escrito)) {
                     sugerencias.add(jugadorOnline.getName());
                 }
@@ -90,9 +93,45 @@ public class DayRoomsTabCompleter implements TabCompleter {
             return sugerencias;
         }
 
-        if (args.length == 3 && (args[0].equalsIgnoreCase("keepinventory")
-                || args[0].equalsIgnoreCase("utilities")
-                || args[0].equalsIgnoreCase("commands"))) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("commands")) {
+            for (String opcion : List.of("true", "false", "blocker")) {
+                if (opcion.startsWith(args[2].toLowerCase())) {
+                    sugerencias.add(opcion);
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 4 && args[0].equalsIgnoreCase("commands") && args[2].equalsIgnoreCase("blocker")) {
+            String escrito = args[3].toLowerCase();
+            for (String cmd : messageManager.getStringList("comandos-importantes")) {
+                if (cmd.toLowerCase().startsWith(escrito)) {
+                    sugerencias.add(cmd);
+                }
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 5 && args[0].equalsIgnoreCase("commands") && args[2].equalsIgnoreCase("blocker")) {
+            sugerencias.add("true");
+            sugerencias.add("false");
+            return sugerencias;
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("pvp")) {
+            sugerencias.add("on");
+            sugerencias.add("off");
+            return sugerencias;
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("blocktype")) {
+            if ("hand".startsWith(args[2].toLowerCase())) {
+                sugerencias.add("hand");
+            }
+            return sugerencias;
+        }
+
+        if (args.length == 3 && (args[0].equalsIgnoreCase("keepinventory") || args[0].equalsIgnoreCase("utilities"))) {
             sugerencias.add("true");
             sugerencias.add("false");
             return sugerencias;
@@ -100,4 +139,4 @@ public class DayRoomsTabCompleter implements TabCompleter {
 
         return sugerencias;
     }
-            }
+                }
