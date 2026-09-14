@@ -13,7 +13,21 @@ public class MessageManager {
         this.plugin = plugin;
     }
 
+    /**
+     * Devuelve el mensaje con el prefix del plugin antepuesto.
+     * Usar para todo lo que se manda por chat.
+     */
     public String get(String key) {
+        String prefix = plugin.getConfig().getString("prefix", "");
+        String crudo = plugin.getConfig().getString("mensajes." + key, "");
+        return ColorUtils.traducir(prefix + crudo);
+    }
+
+    /**
+     * Devuelve el mensaje SIN el prefix. Usar para titulos/subtitulos
+     * (sendTitle) donde el prefix de chat no tiene sentido visual.
+     */
+    public String getSinPrefix(String key) {
         String crudo = plugin.getConfig().getString("mensajes." + key, "");
         return ColorUtils.traducir(crudo);
     }
