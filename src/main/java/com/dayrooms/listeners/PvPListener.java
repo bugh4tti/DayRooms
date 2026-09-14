@@ -3,6 +3,7 @@ package com.dayrooms.listeners;
 import com.dayrooms.managers.BarrierManager;
 import com.dayrooms.managers.MessageManager;
 import com.dayrooms.managers.RoomManager;
+import com.dayrooms.managers.SoloRestanteManager;
 import com.dayrooms.managers.StatsManager;
 import com.dayrooms.model.Room;
 import org.bukkit.Bukkit;
@@ -19,13 +20,16 @@ public class PvPListener implements Listener {
     private final BarrierManager barrierManager;
     private final MessageManager messageManager;
     private final StatsManager statsManager;
+    private final SoloRestanteManager soloRestanteManager;
 
     public PvPListener(RoomManager roomManager, BarrierManager barrierManager,
-                        MessageManager messageManager, StatsManager statsManager) {
+                        MessageManager messageManager, StatsManager statsManager,
+                        SoloRestanteManager soloRestanteManager) {
         this.roomManager = roomManager;
         this.barrierManager = barrierManager;
         this.messageManager = messageManager;
         this.statsManager = statsManager;
+        this.soloRestanteManager = soloRestanteManager;
     }
 
     @EventHandler
@@ -46,6 +50,8 @@ public class PvPListener implements Listener {
         if (ganador == null) {
             return;
         }
+
+        soloRestanteManager.cancelar(room.getName());
 
         statsManager.sumarVictoria(ganador.getUniqueId(), ganador.getName());
 
