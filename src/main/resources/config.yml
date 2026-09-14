@@ -1,24 +1,29 @@
+# Prefix general del plugin, se antepone automaticamente a todos los mensajes de chat
+prefix: "&b&l[DayRooms] &r"
+
 mensajes:
-  victoria: "&c&l[!] ¡Felicidades %ganador%! Ganaste el combate en la room %room% contra &e%perdedor%"
-  entrada: "&#0096FF&l[!] &#0096FF¡Entraste en la room %room%! | ¡Mucha suerte jugador! 🏹"
-  salida: "&#0096FF&l[!] &#0096FFSaliste de la room %room%!"
-  barrera-countdown: "&e&lLa barrera se romperá en &c&l%seg%s&e&l!"
-  barrera-rota: "&a&l¡A pelear!"
-  barrera-recerrada: "&a&l¡La barrera se cerró nuevamente, sigan pvpeando!"
-  no-tienes-room-en-edicion: "&cPrimero creá o editá una room: &e/dayrooms create <nombre>"
-  keepinventory-activado: "&a✔ Keep inventory activado en la room %room%"
-  keepinventory-desactivado: "&c✘ Keep inventory desactivado en la room %room%"
-  utilities-activado: "&a✔ Utilities (lana/tela) activado en la room %room%"
-  utilities-desactivado: "&c✘ Utilities (lana/tela) desactivado en la room %room%"
-  utilities-bloqueado: "&cNo podés usar lana/tela en esta room (utilities desactivado)."
-  comandos-activado: "&a✔ Comandos habilitados en la room %room%"
-  comandos-desactivado: "&c✘ Comandos deshabilitados en la room %room%"
-  comandos-bloqueados: "&cNo podés usar ese comando dentro de esta room."
-  pvp-activado: "&a✔ PvP activado en la room %room%"
-  pvp-desactivado: "&c✘ PvP desactivado en la room %room%"
+  victoria: "&cFelicidades %ganador%! Ganaste el combate en la room %room% contra &e%perdedor%"
+  entrada: "&#0096FFEntraste en la room %room%! | Mucha suerte jugador! 🏹"
+  salida: "&#0096FFSaliste de la room %room%!"
+  barrera-countdown: "&eLa barrera se rompera en &c%seg%s&e!"
+  barrera-rota: "&aA pelear!"
+  barrera-recerrada: "&aLa barrera se cerro nuevamente, sigan pvpeando!"
+  no-tienes-room-en-edicion: "&cPrimero crea o edita una room: &e/dayrooms create <nombre>"
+  keepinventory-activado: "&aKeep inventory activado en la room %room%"
+  keepinventory-desactivado: "&cKeep inventory desactivado en la room %room%"
+  utilities-activado: "&aUtilities (lana/tela) activado en la room %room%"
+  utilities-desactivado: "&cUtilities (lana/tela) desactivado en la room %room%"
+  utilities-bloqueado: "&cNo podes usar lana/tela en esta room (utilities desactivado)."
+  comandos-activado: "&aComandos habilitados en la room %room%"
+  comandos-desactivado: "&cComandos deshabilitados en la room %room%"
+  comandos-bloqueados: "&cNo podes usar ese comando dentro de esta room."
+  pvp-activado: "&aPvP activado en la room %room%"
+  pvp-desactivado: "&cPvP desactivado en la room %room%"
   room-no-existe: "&cNo existe una room con ese nombre."
+  room-llena: "&cEsa room ya tiene 2 jugadores peleando, fuiste teletransportado."
+  no-en-barrera: "&cNo podes pararte sobre la barrera, fuiste teletransportado."
   uso-true-false: "&cUso: /dayrooms %subcomando% <room> <true|false>"
-  victoria-titulo: "&a¡Ganaste!"
+  victoria-titulo: "&aGanaste!"
   victoria-subtitulo: "&7Venciste a &f%perdedor%"
 
 # Segundos del countdown despues de ganar un 1v1 (maximo 40)
@@ -26,6 +31,9 @@ barrera-countdown-segundos: 15
 
 # Segundos de gracia si un admin rompe manualmente el cristal y se va
 barrera-rotura-manual-segundos: 10
+
+# Segundos del countdown cuando un jugador sale y queda 1 solo adentro
+barrera-countdown-salida-segundos: 15
 
 # Comandos que se pueden bloquear individualmente por room con /dayrooms commands <room> blocker
 comandos-importantes:
