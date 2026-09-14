@@ -1,6 +1,7 @@
 package com.dayrooms.managers;
 
 import com.dayrooms.model.Room;
+import com.dayrooms.utils.BypassUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -70,6 +71,14 @@ public class BarrierManager {
     }
 
     public List<Player> obtenerJugadoresEnRoom(Room room) {
+        return obtenerJugadoresEnRoom(room, false);
+    }
+
+    public List<Player> obtenerJugadoresEnRoomSinBypass(Room room) {
+        return obtenerJugadoresEnRoom(room, true);
+    }
+
+    private List<Player> obtenerJugadoresEnRoom(Room room, boolean excluirBypass) {
         List<Player> encontrados = new ArrayList<>();
         Location loc1 = room.getEsquina1();
         Location loc2 = room.getEsquina2();
@@ -85,6 +94,9 @@ public class BarrierManager {
         int maxZ = Math.max(loc1.getBlockZ(), loc2.getBlockZ());
 
         for (Player jugador : loc1.getWorld().getPlayers()) {
+            if (excluirBypass && BypassUtils.tieneBypass(jugador)) {
+                continue;
+            }
             Location loc = jugador.getLocation();
             if (loc.getBlockX() >= minX && loc.getBlockX() <= maxX
                     && loc.getBlockY() >= minY && loc.getBlockY() <= maxY
@@ -128,4 +140,4 @@ public class BarrierManager {
             }
         }.runTaskTimer(plugin, 0L, 20L);
     }
-                            }
+    }
